@@ -52,36 +52,40 @@ def next(beam) :
 	if grid[next_row][next_column] == '|' :
 		return [(next_row, next_column, 'u'), (next_row, next_column, 'd')]
 
+def energized(start) :
+	beams = []
+	beams.append(start)
+	energized = set()
+	while len(beams) > 0 :
+		next_beams = []
+		for beam in beams :
+			new = next(beam)
+			if new is not None :
+				for x in new :
+					if x not in energized :
+						energized.add(x)
+						next_beams.append(x)
+
+		beams = next_beams
+
+	cells = set()
+	for beam in energized :
+		r, c, d = beam
+		cells.add((r, c))
+
+	return len(cells)	
+
 grid = []
 for l in open('input.txt') :
 	grid.append(list(l.strip()))
 
-beams = []
-beams.append((0, -1, 'r'))
-energized = set()
-while len(beams) > 0 :
-	next_beams = []
-	for beam in beams :
-		new = next(beam)
-		if new is not None :
-			for x in new :
-				if x not in energized :
-					energized.add(x)
-					next_beams.append(x)
-
-	beams = next_beams
-
-cells = set()
-for beam in energized :
-	r, c, d = beam
-	cells.add((r, c))
-
-print(len(cells))
-
-# for i in range(len(grid)) :
-# 	for j in range(len(grid[i])) :
-# 		if (i, j) in cells :
-# 			print('#', end='')
-# 		else :
-# 			print('.', end='')
-# 	print()
+max_energized = 0
+for r in range(len(grid)) :
+	max_energized = max(max_energized, energized((r, -1, 'r')))
+for r in range(len(grid)) :
+	max_energized = max(max_energized, energized((r, len(grid[0]) + 1, 'l')))
+for c in range(len(grid[0])) :
+	max_energized = max(max_energized, energized((-1, c, 'd')))
+for c in range(len(grid[0])) :
+	max_energized = max(max_energized, energized((len(grid), c, 'u')))
+print(max_energized)
