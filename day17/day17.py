@@ -46,7 +46,7 @@ queue.append((0, Pos(0, 0, Direction.DOWN), 0))
 while queue :
 	cost, pos, steps = heapq.heappop(queue)
 
-	if pos.r == len(grid) - 1 and pos.c == len(grid[0]) -1 :
+	if pos.r == len(grid) - 1 and pos.c == len(grid[0]) -1 and steps >= 4:
 		print(cost)
 		break
 
@@ -60,7 +60,7 @@ while queue :
 	r += pos.r
 	c += pos.c
 	move = Pos(r, c, d)
-	if is_valid_move(r, c) :
+	if is_valid_move(r, c) and steps >= 4:
 		heapq.heappush(queue, (cost + grid[r][c], move, 1))
 
 	# turn right and step
@@ -69,7 +69,7 @@ while queue :
 	r += pos.r
 	c += pos.c
 	move = Pos(r, c, d)
-	if is_valid_move(r, c) :
+	if is_valid_move(r, c) and steps >= 4:
 		heapq.heappush(queue, (cost + grid[r][c], move, 1))
 
 	# continue forward if steps < 3
@@ -77,5 +77,5 @@ while queue :
 	r += pos.r
 	c += pos.c
 	move = Pos(r, c, pos.dir)
-	if steps < 3 and is_valid_move(r, c):
+	if steps < 10 and is_valid_move(r, c):
 		heapq.heappush(queue, (cost + grid[r][c], move, steps + 1))
